@@ -5,6 +5,7 @@ import { Colors } from '@/constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../configs/FirebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function signIn() {
   const [email, setEmail] = useState();
@@ -19,6 +20,15 @@ export default function signIn() {
         })
     }, [])
 
+    const storeUserData = async (userData) => {
+      try {
+        await AsyncStorage.setItem('user', JSON.stringify(userData));
+        console.log('User data stored');
+      } catch (error) {
+        console.log('Error storing user data:', error);
+      }
+    };
+
     const onSignIn = () => {
       if (!email ||!password) {
         ToastAndroid.show('Please enter all details', ToastAndroid.LONG);
@@ -27,6 +37,8 @@ export default function signIn() {
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           console.log(userCredential.user);
+          storeUserData(userCredential.user);
+          router.replace('/mytrip')
         })
         .catch((error) => {
           const errorMessage = error.message;

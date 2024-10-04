@@ -29,6 +29,7 @@ export default function signUp() {
      .then((userCredential) => {
         const user = userCredential.user;
         console.log(user);
+        router.replace('/mytrip');
       })
       .catch((error) => {
         const errorCode = error.code;
