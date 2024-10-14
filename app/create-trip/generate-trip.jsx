@@ -2,9 +2,41 @@ import { View, Text, Image } from 'react-native'
 import React, { useEffect, useState, useContext } from 'react'
 import { Colors } from '../../constants/Colors'
 import { CreateTripContext } from '../../context/CreateTripContext';
+import { setDoc, doc, addDoc, collection } from 'firebase/firestore';
+import { db, auth } from '../../configs/FirebaseConfig'
+import { useRouter } from 'expo-router';
+import { onAuthStateChanged } from 'firebase/auth'
 
 export default function generateTrip() {
+  const [currentUser, setcurrentUser] = useState(null);
     const {tripData, settripData}=useContext(CreateTripContext);
+    const router = useRouter();
+
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setcurrentUser(user);
+        }else{
+          console.log("User is signed out");
+        }
+      });
+      return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+      if(currentUser && tripData){
+        createTrip();
+      }
+    }, [currentUser, tripData]) 
+
+    const createTrip = async () => {
+      await addDoc(collection(db, 'trips'), {
+        tripData: JSON.stringify(tripData),
+        userId: currentUser.uid,
+      });
+      router.replace('/(tabs)/mytrip');
+    }
+
   return (
     <View style={{
         padding: 25,

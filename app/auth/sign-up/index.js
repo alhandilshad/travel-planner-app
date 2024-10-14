@@ -4,7 +4,8 @@ import { useNavigation, useRouter } from "expo-router";
 import { Colors } from '@/constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../../configs/FirebaseConfig";
+import { auth, db } from "../../../configs/FirebaseConfig";
+import { doc, setDoc, getDocs, collection } from "firebase/firestore";
 
 export default function signUp() {
   const [email, setEmail] = useState();
@@ -20,15 +21,29 @@ export default function signUp() {
     });
   }, []);
 
-  const onCreateAccount = () => {
+  const onCreateAccount = async () => {
+    const dbSnap = await getDocs(collection(db, "users"));
+    const userList = [];
+    dbSnap.forEach((doc) => {
+      userList.push(doc.data());
+    });
+
+    const userExists = userList.some((user) => user.name === name);
+
+    if (userExists) {
+      ToastAndroid.show('Username already exist! Please use another one.', ToastAndroid.LONG)
+      return;
+    }
+
     if (!email ||!password ||!fullName) {
       ToastAndroid.show('Please enter all details', ToastAndroid.LONG)
       return;
     }
     createUserWithEmailAndPassword(auth, email, password)
-     .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
+     .then(async (userCredential) => {
+        const uid = userCredential.user.uid;
+        const userData = { fullName, email, uid };
+        await setDoc(doc(db, "users", uid), userData);
         router.replace('/mytrip');
       })
       .catch((error) => {
