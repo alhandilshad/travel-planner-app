@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Colors } from '../../constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -7,10 +7,13 @@ import { getDocs, collection, where, query } from 'firebase/firestore';
 import { db, auth } from '../../configs/FirebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import UserTripList from '../../components/MyTrips/UserTripList';
+import { useRouter } from 'expo-router';
 
 export default function myTrip() {
   const [userTrips, setuserTrips] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -53,7 +56,9 @@ export default function myTrip() {
           fontFamily: 'outfit-bold',
           fontSize: 35,
         }}>myTrip</Text>
-        <Ionicons name="add-circle" size={50} color="black" />
+        <TouchableOpacity onPress={() => router.push('/create-trip/search-place')}>
+          <Ionicons name="add-circle" size={50} color="black" />
+        </TouchableOpacity>
       </View>
 
       {userTrips?.length === 0 ? 
