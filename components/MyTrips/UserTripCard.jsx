@@ -2,9 +2,12 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import moment from 'moment'
 import { Colors } from '../../constants/Colors';
+import { useRouter } from 'expo-router';
 
 export default function UserTripCard({ trip, key }) {
     const tripData = JSON.parse(trip?.tripData)
+
+    const router = useRouter();
   return (
     <View style={{
         paddingTop: 20,
@@ -12,7 +15,14 @@ export default function UserTripCard({ trip, key }) {
         flexDirection: 'row',
         gap: 10
     }}>
-      <Image style={{width: 100, height: 100, borderRadius: 10}} source={{uri:'https://maps.gomaps.pro/maps/api/place/photo?photo_reference='+tripData?.locationInfo.photoRef+'&maxwidth=400&key=AlzaSyUauYMxlkYgk0g0uPpX7b1m2jxpslpvOQY'}}></Image>
+      {tripData?.locationInfo?.photoRef ? (
+        <Image style={{width: 100, height: 100, borderRadius: 10}} source={{uri:'https://maps.gomaps.pro/maps/api/place/photo?photo_reference='+tripData?.locationInfo.photoRef+'&maxwidth=400&key=AlzaSyUauYMxlkYgk0g0uPpX7b1m2jxpslpvOQY'}}></Image>
+      ):(
+        <Image source={require('@/assets/images/login.webp')} style={{
+          width:'100%',
+          height: 450,
+        }}></Image>
+      )}
       <View>
         <Text style={{fontFamily: 'outfit-medium', fontSize: 18}}>{tripData?.locationInfo?.name}</Text>
         <View style={{
@@ -24,7 +34,7 @@ export default function UserTripCard({ trip, key }) {
             <Text style={{fontFamily: 'outfit'}}>{moment(tripData?.startDate).format('DD MMM')+' To '+moment(tripData?.endDate).format('DD MMM')}</Text>
             <Text style={{fontFamily: 'outfit', fontSize: 17}}>{tripData?.traveler?.icon} {tripData?.traveler?.title}</Text>
         </View>
-        <TouchableOpacity style={{backgroundColor: Colors.PRIMARY, width: 200, padding: 7, borderRadius: 20, marginTop: 8}}>
+        <TouchableOpacity onPress={() => router.push({pathname: '/see-trip/see-plan', params: {latestTrip: JSON.stringify(tripData)} })} style={{backgroundColor: Colors.PRIMARY, width: 200, padding: 7, borderRadius: 20, marginTop: 8}}>
           <Text style={{color: Colors.WHITE, textAlign: 'center'}}>See your Plan</Text>
         </TouchableOpacity>
       </View>

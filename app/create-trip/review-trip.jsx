@@ -124,7 +124,7 @@ export default function reviewtrip() {
                 <Text style={{
                     fontFamily: 'outfit-medium',
                     fontSize: 20
-                }}>{tripData?.budget}</Text>
+                }}>{tripData?.budget?.title}</Text>
             </View>
         </View>
       </View>

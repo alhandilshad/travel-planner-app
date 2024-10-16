@@ -24,7 +24,7 @@ export default function selectbudget() {
     useEffect(() => {
         selectedOption && settripData({
             ...tripData,
-            budget: selectedOption?.title,
+            budget: selectedOption,
         })
     }, [selectedOption]);
 

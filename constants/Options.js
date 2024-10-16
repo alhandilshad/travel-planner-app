@@ -4,7 +4,7 @@ export const selectTravelerList = [
         title: 'Just me',
         desc: 'A sole traveler in exploration',
         icon: '✈️',
-        people: '1'
+        people: '1 People'
     },
     {
         id: 2,
@@ -34,18 +34,18 @@ export const selectBudgetOptions = [
         id: 1,
         title: 'Cheap',
         desc: 'Stay conscious of costs',
-        icon: '✈️',
+        icon: '💸',
     },
     {
         id: 2,
         title: 'Moderate',
         desc: 'Keep cost on the average',
-        icon: '🥂',
+        icon: '💰',
     },
     {
         id: 3,
         title: 'Luxury',
         desc: 'Dont worry about the cost',
-        icon: '🏡',
+        icon: '💵',
     },
 ]
