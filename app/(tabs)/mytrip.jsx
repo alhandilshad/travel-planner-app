@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Colors } from '../../constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -40,12 +40,9 @@ export default function myTrip() {
   };
 
   return (
-    <View style={{
-      padding: 25,
-      paddingTop: 55,
+    <ScrollView style={{
       backgroundColor: Colors.WHITE,
-      height: '100%'
-    }}>
+    }} contentContainerStyle={{flexGrow: 1, padding: 25, paddingTop: 55}}>
       <View style={{
         display: 'flex',
         flexDirection: 'row',
@@ -55,7 +52,7 @@ export default function myTrip() {
         <Text style={{
           fontFamily: 'outfit-bold',
           fontSize: 35,
-        }}>myTrip</Text>
+        }}>myTrips</Text>
         <TouchableOpacity onPress={() => router.push('/create-trip/search-place')}>
           <Ionicons name="add-circle" size={50} color="black" />
         </TouchableOpacity>
@@ -65,6 +62,6 @@ export default function myTrip() {
         <StartNewTripCard /> : 
         <UserTripList userTrips={userTrips} />
       }
-    </View>
+    </ScrollView>
   )
 }
