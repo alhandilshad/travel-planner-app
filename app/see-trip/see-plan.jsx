@@ -17,6 +17,7 @@ export default function seeplan() {
       headerShown: true,
       headerTransparent: true,
       headerTitle: "",
+      headerTintColor: Colors.WHITE
     });
   }, []);
   return (

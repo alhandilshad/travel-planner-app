@@ -12,7 +12,7 @@ export default function UserTripList({ userTrips }) {
   return (
     <View>
       <View style={{
-        paddingTop: 10
+        paddingTop: 20
       }}>
         {latestTrip?.locationInfo?.photoRef ? (
           <Image style={{width: '100%', height: 240, borderRadius: 20}} source={{uri:'https://maps.gomaps.pro/maps/api/place/photo?photo_reference='+latestTrip?.locationInfo.photoRef+'&maxwidth=400&key=AlzaSyUauYMxlkYgk0g0uPpX7b1m2jxpslpvOQY'}}></Image>
@@ -32,7 +32,7 @@ export default function UserTripList({ userTrips }) {
           <Text style={{color: Colors.WHITE, textAlign: 'center'}}>See your Plan</Text>
         </TouchableOpacity>
       </View>
-      <View>
+      <View style={{paddingTop: 20}}>
         {userTrips?.slice(1).map((trip, index) => (
           <UserTripCard trip={trip} key={index} />
         ))}
