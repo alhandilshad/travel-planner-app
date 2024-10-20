@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { Colors } from '../../constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import StartNewTripCard from '../../components/MyTrips/StartNewTripCard';
-import { getDocs, collection, where, query } from 'firebase/firestore';
+import { getDocs, collection, where, query, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../../configs/FirebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import UserTripList from '../../components/MyTrips/UserTripList';
@@ -27,17 +27,20 @@ export default function myTrip() {
   }, []);
 
   useEffect(() => {
-    getMyTrips();
-  }, [currentUser])
+    if (currentUser) {
+      const q = query(collection(db, 'trips'), where('userId', '==', currentUser.uid));
 
-  const getMyTrips = async () => {
-    const q = query(collection(db, 'trips'), where('userId', '==', currentUser.uid))
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, '=>', doc.data());
-      setuserTrips(prevState => [...prevState, doc.data()]);
-    })
-  };
+      const unsubscribeTrips = onSnapshot(q, (querySnapshot) => {
+        const trips = [];
+        querySnapshot.forEach((doc) => {
+          trips.push(doc.data());
+        });
+        setuserTrips(trips);
+      });
+
+      return () => unsubscribeTrips();
+    }
+  }, [currentUser]);
 
   return (
     <ScrollView style={{

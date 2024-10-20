@@ -52,7 +52,7 @@ export default function reviewtrip() {
             gap: 20
         }}>
             <Text style={{fontSize: 30}}>📍</Text>
-            <View>
+            <View style={{ flex: 1 }}>
                 <Text style={{
                     fontFamily: 'outfit',
                     fontSize: 20,
@@ -60,7 +60,8 @@ export default function reviewtrip() {
                 }}>Destination</Text>
                 <Text style={{
                     fontFamily: 'outfit-medium',
-                    fontSize: 20
+                    fontSize: 20,
+                    flexWrap: 'wrap',
                 }}>{tripData?.locationInfo?.name}</Text>
             </View>
         </View>

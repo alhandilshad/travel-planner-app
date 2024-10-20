@@ -6,6 +6,8 @@ import { useRouter } from "expo-router";
 
 export default function UserTripCard({ trip, key }) {
   const tripData = JSON.parse(trip?.tripData);
+  console.log(trip?.createdAt);
+  
 
   const router = useRouter();
   return (

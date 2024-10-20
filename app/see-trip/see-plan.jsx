@@ -6,7 +6,7 @@ import moment from "moment";
 
 export default function seeplan() {
   const item = useLocalSearchParams();
-  console.log(item.latestTrip, "item");
+  console.log(item, "item");
 
   const navigation = useNavigation();
 

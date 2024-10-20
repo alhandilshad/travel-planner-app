@@ -33,6 +33,7 @@ export default function generateTrip() {
       await addDoc(collection(db, 'trips'), {
         tripData: JSON.stringify(tripData),
         userId: currentUser.uid,
+        createdAt: Date.now()
       });
       router.replace('/(tabs)/mytrip');
     }
