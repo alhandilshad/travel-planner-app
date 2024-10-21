@@ -3,14 +3,19 @@ import React, { useState, useEffect } from "react";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Colors } from "../../constants/Colors";
 import moment from "moment";
+import { TouchableOpacity } from "react-native";
 
 export default function seeplan() {
   const item = useLocalSearchParams();
-  console.log(item, "item");
+  console.log(item.date, "item");
 
   const navigation = useNavigation();
 
   const latestTrip = item?.latestTrip ? JSON.parse(item.latestTrip) : {};
+
+  const formattedDate = item?.date
+  ? moment(parseInt(item.date)).format("DD MMM YYYY, hh:mm A")
+  : "Date not available";
 
   useEffect(() => {
     navigation.setOptions({
@@ -99,6 +104,42 @@ export default function seeplan() {
             fontSize: 20,
             marginTop: 10,
         }}>{latestTrip?.budget?.desc}</Text>
+        <Text style={{
+          fontFamily: 'outfit-medium',
+          fontSize: 17,
+          marginTop: 15,
+        }}>Trip placed at : {formattedDate}</Text>
+        <View style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent:'space-between',
+          alignItems: 'center',
+          marginTop: 20,
+        }}
+        >
+          <TouchableOpacity style={{
+            backgroundColor: 'red',
+            paddingVertical: 10,
+            paddingHorizontal: 30,
+            borderRadius: 20,
+            alignItems: 'center',
+          }}>
+            <Text style={{
+              color: Colors.WHITE
+            }}>Delete Trip</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{
+            backgroundColor: Colors.PRIMARY,
+            paddingVertical: 10,
+            paddingHorizontal: 30,
+            borderRadius: 20,
+            alignItems: 'center',
+          }}>
+            <Text style={{
+              color: Colors.WHITE
+            }}>See Map</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

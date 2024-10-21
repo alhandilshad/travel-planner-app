@@ -12,8 +12,7 @@ export default function UserTripList({ userTrips }) {
   );
   const latestTrip = JSON.parse(sortedTrips[0]?.tripData);
   
-  console.log(sortedTrips[0]?.createdAt);
-  
+  console.log(sortedTrips[0]?.createdAt, 'date');
 
   const router = useRouter();
   return (
@@ -76,7 +75,10 @@ export default function UserTripList({ userTrips }) {
           onPress={() =>
             router.push({
               pathname: "/see-trip/see-plan",
-              params: { latestTrip: JSON.stringify(latestTrip) },
+              params: {
+                latestTrip: JSON.stringify(latestTrip),
+                date: sortedTrips[0]?.createdAt
+              },
             })
           }
           style={{

@@ -71,7 +71,10 @@ export default function UserTripCard({ trip, key }) {
           onPress={() =>
             router.push({
               pathname: "/see-trip/see-plan",
-              params: { latestTrip: JSON.stringify(tripData) },
+              params: {
+                latestTrip: JSON.stringify(tripData),
+                date: trip?.createdAt
+              },
             })
           }
           style={{
