@@ -8,12 +8,11 @@ import * as Location from 'expo-location';
 
 export default function seeplan() {
   const item = useLocalSearchParams();
-  console.log(item.date, "item");
-
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  console.log(item.latestTrip, "item");
 
   const navigation = useNavigation();
+
+  const router = useRouter();
 
   const latestTrip = item?.latestTrip ? JSON.parse(item.latestTrip) : {};
 
@@ -33,21 +32,21 @@ export default function seeplan() {
   const handleDeleteTrip = () => {}
 
   const handleSeeMap = async () => {
-    // Request location permissions
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      setErrorMsg('Permission to access location was denied');
       Alert.alert('Permission Denied', 'Unable to access location');
       return;
     }
-
-    // Fetch the user's current location
     let userLocation = await Location.getCurrentPositionAsync({});
-    setLocation(userLocation);
-    Alert.alert('Location', `Latitude: ${userLocation.coords.latitude}, Longitude: ${userLocation.coords.longitude}`);
-    
-    // You can now use `userLocation.coords.latitude` and `userLocation.coords.longitude`
-    // to display the map or pass the location data to another screen.
+    router.push({
+      pathname: "/see-trip/see-map",
+      params: {
+        tripPlaceLatitude: latestTrip?.locationInfo?.coordinates?.lat,
+        tripPlaceLongitude: latestTrip?.locationInfo?.coordinates?.lng,
+        currentLatitude: userLocation.coords.latitude,
+        currentLongitude: userLocation.coords.longitude,
+      },
+    })
   };
 
   return (
@@ -170,7 +169,6 @@ export default function seeplan() {
             }}>See Map</Text>
           </TouchableOpacity>
         </View>
-        <Text>{errorMsg}</Text>
       </View>
     </View>
   );
