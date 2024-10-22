@@ -1,13 +1,17 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Colors } from "../../constants/Colors";
 import moment from "moment";
 import { TouchableOpacity } from "react-native";
+import * as Location from 'expo-location';
 
 export default function seeplan() {
   const item = useLocalSearchParams();
   console.log(item.date, "item");
+
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const navigation = useNavigation();
 
@@ -25,6 +29,27 @@ export default function seeplan() {
       headerTintColor: Colors.WHITE
     });
   }, []);
+
+  const handleDeleteTrip = () => {}
+
+  const handleSeeMap = async () => {
+    // Request location permissions
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setErrorMsg('Permission to access location was denied');
+      Alert.alert('Permission Denied', 'Unable to access location');
+      return;
+    }
+
+    // Fetch the user's current location
+    let userLocation = await Location.getCurrentPositionAsync({});
+    setLocation(userLocation);
+    Alert.alert('Location', `Latitude: ${userLocation.coords.latitude}, Longitude: ${userLocation.coords.longitude}`);
+    
+    // You can now use `userLocation.coords.latitude` and `userLocation.coords.longitude`
+    // to display the map or pass the location data to another screen.
+  };
+
   return (
     <View
       style={{
@@ -59,9 +84,9 @@ export default function seeplan() {
           {latestTrip?.locationInfo?.name}
         </Text>
         <Text style={{
-                    marginTop: 10,
                     fontFamily: 'outfit-medium',
-                    fontSize: 20
+                    fontSize: 18,
+                    color: Colors.GRAY,
                 }}>{moment(latestTrip?.startDate).format('DD MMM')+' To '+moment(latestTrip?.endDate).format('DD MMM')+'  '}({ latestTrip?.totalDays } days)</Text>
         <View
           style={{
@@ -106,8 +131,9 @@ export default function seeplan() {
         }}>{latestTrip?.budget?.desc}</Text>
         <Text style={{
           fontFamily: 'outfit-medium',
-          fontSize: 17,
+          fontSize: 18,
           marginTop: 15,
+          color: Colors.GRAY,
         }}>Trip placed at : {formattedDate}</Text>
         <View style={{
           display: 'flex',
@@ -117,29 +143,34 @@ export default function seeplan() {
           marginTop: 20,
         }}
         >
-          <TouchableOpacity style={{
+          <TouchableOpacity onPress={() => handleDeleteTrip} style={{
             backgroundColor: 'red',
             paddingVertical: 10,
             paddingHorizontal: 30,
-            borderRadius: 20,
+            borderRadius: 22,
             alignItems: 'center',
           }}>
             <Text style={{
-              color: Colors.WHITE
+              color: Colors.WHITE,
+              fontFamily: 'outfit-medium',
+              fontSize: 16
             }}>Delete Trip</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{
+          <TouchableOpacity onPress={handleSeeMap} style={{
             backgroundColor: Colors.PRIMARY,
             paddingVertical: 10,
             paddingHorizontal: 30,
-            borderRadius: 20,
+            borderRadius: 22,
             alignItems: 'center',
           }}>
             <Text style={{
-              color: Colors.WHITE
+              color: Colors.WHITE,
+              fontFamily: 'outfit-medium',
+              fontSize: 16
             }}>See Map</Text>
           </TouchableOpacity>
         </View>
+        <Text>{errorMsg}</Text>
       </View>
     </View>
   );

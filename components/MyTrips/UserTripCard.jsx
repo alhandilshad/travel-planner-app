@@ -85,7 +85,7 @@ export default function UserTripCard({ trip, key }) {
             marginTop: 8,
           }}
         >
-          <Text style={{ color: Colors.WHITE, textAlign: "center" }}>
+          <Text style={{ color: Colors.WHITE, textAlign: "center", fontFamily: 'outfit-medium' }}>
             See your Plan
           </Text>
         </TouchableOpacity>

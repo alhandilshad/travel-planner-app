@@ -84,11 +84,11 @@ export default function UserTripList({ userTrips }) {
           style={{
             backgroundColor: Colors.PRIMARY,
             padding: 13,
-            borderRadius: 20,
+            borderRadius: 25,
             marginTop: 10,
           }}
         >
-          <Text style={{ color: Colors.WHITE, textAlign: "center" }}>
+          <Text style={{ color: Colors.WHITE, textAlign: "center", fontFamily: 'outfit-medium' }}>
             See your Plan
           </Text>
         </TouchableOpacity>
