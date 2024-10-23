@@ -1,96 +1,102 @@
-import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect, useContext } from 'react'
-import { useNavigation, useRouter } from 'expo-router'
-import { Colors } from '../../constants/Colors'
-import axios from 'axios'
-import { CreateTripContext } from '../../context/CreateTripContext'
+import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigation, useRouter } from 'expo-router';
+import { Colors } from '../../constants/Colors';
+import axios from 'axios';
+import { CreateTripContext } from '../../context/CreateTripContext';
 
 export default function SearchPlace() {
-  const navigation = useNavigation()
-  const [query, setQuery] = useState('')
+  const navigation = useNavigation();
+  const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
-  const {tripData, settripData}=useContext(CreateTripContext);
-
-  const router = useRouter()
+  const { tripData, settripData } = useContext(CreateTripContext);
+  const router = useRouter();
 
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
       headerTransparent: true,
       headerTitle: 'Search',
-    })
-  }, [navigation])
+    });
+  }, [navigation]);
 
-  useEffect(() => {
-    console.log(tripData)
-  }, [tripData])
-
-  const API_KEY = 'AlzaSyUauYMxlkYgk0g0uPpX7b1m2jxpslpvOQY'
+  const API_KEY = 'fsq3RtyN5Es53dNzSX0kKTh/30O60A9Xve7up1HcQM2Pa9Y=';
 
   const fetchPlaces = async (text) => {
-    const url = `https://maps.gomaps.pro/maps/api/place/autocomplete/json?input=${text}&key=${API_KEY}`
+    const url = `https://api.foursquare.com/v3/places/search?query=${text}`;
+    const options = {
+      headers: {
+        accept: 'application/json',
+        Authorization: API_KEY,
+      },
+    };
 
     try {
-      const response = await axios.get(url)
-      if (response.data.predictions) {
-        setSuggestions(response.data.predictions)
+      const response = await axios.get(url, options);
+      if (response.data.results) {
+        setSuggestions(response.data.results);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const fetchPlaceDetails = async (placeId, name) => {
-    const detailsUrl = `https://maps.gomaps.pro/maps/api/place/details/json?place_id=${placeId}&key=${API_KEY}`
+    const detailsUrl = `https://api.foursquare.com/v3/places/${placeId}`;
+    const options = {
+      headers: {
+        accept: 'application/json',
+        Authorization: API_KEY,
+      },
+    };
 
     try {
-      const response = await axios.get(detailsUrl);
-      const placeDetails = response.data.result;
+      const response = await axios.get(detailsUrl, options);
+      const placeDetails = response.data;
       settripData({
         locationInfo: {
           name,
-          coordinates: placeDetails?.geometry.location,
-          photoRef: placeDetails?.photos[0]?.photo_reference,
-          url: placeDetails?.url
-        }
+          coordinates: placeDetails.location, // Use correct structure
+          photoRef: placeDetails.photos[0]?.photo_reference,
+          url: placeDetails.url,
+        },
       });
-      router.push('/create-trip/select-traveler')
+      router.push('/create-trip/select-traveler');
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const handleSearch = (text) => {
-    setQuery(text)
+    setQuery(text);
     if (text.length > 2) {
-      fetchPlaces(text)
+      fetchPlaces(text);
     } else {
-      setSuggestions([])
+      setSuggestions([]);
     }
-  }
+  };
 
   const handleSuggestionPress = (place) => {
-    fetchPlaceDetails(place.place_id, place.description)
-    setQuery(place.description)
-    setSuggestions([])
-  }
+    fetchPlaceDetails(place.id, place.name); // Use correct structure
+    setQuery(place.name);
+    setSuggestions([]);
+  };
 
   return (
     <View style={{
       padding: 25,
       paddingTop: 75,
       backgroundColor: Colors.WHITE,
-      height: '100%'
+      height: '100%',
     }}>
-      <View></View>
       <TextInput
         style={{
           borderWidth: 1,
           borderColor: Colors.GRAY,
           padding: 10,
           borderRadius: 5,
-          marginTop: 30
+          marginTop: 30,
         }}
         placeholder="Search places..."
         value={query}
@@ -100,7 +106,7 @@ export default function SearchPlace() {
       {suggestions.length > 0 && (
         <FlatList
           data={suggestions}
-          keyExtractor={(item) => item.place_id}
+          keyExtractor={(item) => item.id} // Ensure key is a string
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => handleSuggestionPress(item)}
@@ -110,11 +116,18 @@ export default function SearchPlace() {
                 borderBottomColor: Colors.LIGHT_GRAY,
               }}
             >
-              <Text>{item.description}</Text>
+              {/* Wrap the place name in a Text component */}
+              <Text>{item.name || 'Unknown Place'}</Text> {/* Fallback if name is undefined */}
+              {/* You can also render other details if necessary */}
+              {item.categories && item.categories.length > 0 && (
+                <Text style={{ fontSize: 12, color: Colors.GRAY }}>
+                  {item.categories[0].name} {/* Assuming the first category */}
+                </Text>
+              )}
             </TouchableOpacity>
           )}
         />
       )}
     </View>
-  )
+  );
 }

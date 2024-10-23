@@ -41,8 +41,7 @@ export default function seeplan() {
     router.push({
       pathname: "/see-trip/see-map",
       params: {
-        tripPlaceLatitude: latestTrip?.locationInfo?.coordinates?.lat,
-        tripPlaceLongitude: latestTrip?.locationInfo?.coordinates?.lng,
+        tripPlace: JSON.stringify(latestTrip),
         currentLatitude: userLocation.coords.latitude,
         currentLongitude: userLocation.coords.longitude,
       },
