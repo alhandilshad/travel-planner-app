@@ -13,8 +13,8 @@ export default function SeePlan() {
   const navigation = useNavigation();
 
   const tripPlaceLocation = {
-    latitude: parseFloat(trip?.locationInfo?.coordinates?.lat),
-    longitude: parseFloat(trip?.locationInfo?.coordinates?.lng),
+    latitude: parseFloat(trip?.locationInfo?.coordinates?.latitude),
+    longitude: parseFloat(trip?.locationInfo?.coordinates?.longitude),
   };
 
   React.useEffect(() => {

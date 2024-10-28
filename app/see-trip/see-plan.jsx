@@ -5,13 +5,13 @@ import { Colors } from "../../constants/Colors";
 import moment from "moment";
 import { TouchableOpacity } from "react-native";
 import * as Location from 'expo-location';
+import axios from "axios";
 
 export default function seeplan() {
+  const [placeImage, setPlaceImage] = useState(null);
   const item = useLocalSearchParams();
-  console.log(item.latestTrip, "item");
 
   const navigation = useNavigation();
-
   const router = useRouter();
 
   const latestTrip = item?.latestTrip ? JSON.parse(item.latestTrip) : {};
@@ -27,7 +27,24 @@ export default function seeplan() {
       headerTitle: "",
       headerTintColor: Colors.WHITE
     });
-  }, []);
+    const fetchPlaceImage = async () => {
+      if (latestTrip?.locationInfo?.name) {
+        const placeName = latestTrip.locationInfo.name;
+        try {
+          const response = await axios.get(
+            `https://api.unsplash.com/search/photos?query=${placeName}&client_id=oZV24h3YrF-N6bvc1YPbrkw9L2dasbOs91LCIOlb5kY`
+          );
+          if (response.data.results.length > 0) {
+            setPlaceImage(response.data.results[0].urls.regular);
+          }
+        } catch (error) {
+          console.error("Error fetching image from Unsplash:", error);
+        }
+      }
+    };
+
+    fetchPlaceImage();
+  }, [latestTrip]);
 
   const handleDeleteTrip = () => {}
 
@@ -55,13 +72,19 @@ export default function seeplan() {
         height: "100%",
       }}
     >
-        {latestTrip?.locationInfo?.photoRef ? (
-            <Image style={{width: '100%', height: 240}} source={{uri:'https://maps.gomaps.pro/maps/api/place/photo?photo_reference='+latestTrip?.locationInfo?.photoRef+'&maxwidth=400&key=AlzaSyUauYMxlkYgk0g0uPpX7b1m2jxpslpvOQY'}}></Image>
-        ):(
-            <Image source={require('@/assets/images/login.webp')} style={{
-                width:'100%',
-                height: 450,
-              }}></Image>
+        {placeImage ? (
+          <Image
+            style={{ width: '100%', height: 240 }}
+            source={{ uri: placeImage }}
+          />
+        ) : (
+          <Image
+            source={require("@/assets/images/login.webp")}
+            style={{
+              width: '100%',
+              height: 240,
+            }}
+          />
         )}
       <View
         style={{

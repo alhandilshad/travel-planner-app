@@ -1,13 +1,34 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { Colors } from "../../constants/Colors";
 import { useRouter } from "expo-router";
+import axios from "axios";
 
 export default function UserTripCard({ trip, key }) {
+  const [placeImage, setPlaceImage] = useState(null);
   const tripData = JSON.parse(trip?.tripData);
   console.log(trip?.createdAt);
   
+  useEffect(() => {
+    const fetchPlaceImage = async () => {
+      if (tripData?.locationInfo?.name) {
+        const placeName = tripData.locationInfo.name;
+        try {
+          const response = await axios.get(
+            `https://api.unsplash.com/search/photos?query=${placeName}&client_id=oZV24h3YrF-N6bvc1YPbrkw9L2dasbOs91LCIOlb5kY`
+          );
+          if (response.data.results.length > 0) {
+            setPlaceImage(response.data.results[0].urls.regular);
+          }
+        } catch (error) {
+          console.error("Error fetching image from Unsplash:", error);
+        }
+      }
+    };
+
+    fetchPlaceImage();
+  }, [trip]);
 
   const router = useRouter();
   return (
@@ -20,25 +41,21 @@ export default function UserTripCard({ trip, key }) {
         gap: 10,
       }}
     >
-      {tripData?.locationInfo?.photoRef ? (
-        <Image
-          style={{ width: 100, height: 100, borderRadius: 10 }}
-          source={{
-            uri:
-              "https://maps.gomaps.pro/maps/api/place/photo?photo_reference=" +
-              tripData?.locationInfo.photoRef +
-              "&maxwidth=400&key=AlzaSyUauYMxlkYgk0g0uPpX7b1m2jxpslpvOQY",
-          }}
-        ></Image>
-      ) : (
-        <Image
-          source={require("@/assets/images/login.webp")}
-          style={{
-            width: "100%",
-            height: 450,
-          }}
-        ></Image>
-      )}
+      {placeImage ? (
+          <Image
+            style={{ width: 100, height: 100, borderRadius: 20 }}
+            source={{ uri: placeImage }}
+          />
+        ) : (
+          <Image
+            source={require("@/assets/images/login.webp")}
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 20,
+            }}
+          />
+        )}
       <View style={{ flex: 1 }}>
         <Text
           style={{

@@ -21,51 +21,35 @@ export default function SearchPlace() {
     });
   }, [navigation]);
 
-  const API_KEY = 'fsq3RtyN5Es53dNzSX0kKTh/30O60A9Xve7up1HcQM2Pa9Y=';
-
   const fetchPlaces = async (text) => {
-    const url = `https://api.foursquare.com/v3/places/search?query=${text}`;
-    const options = {
-      headers: {
-        accept: 'application/json',
-        Authorization: API_KEY,
-      },
-    };
+    const url = `https://nominatim.openstreetmap.org/search?q=${text}&format=json&addressdetails=1&limit=5&accept-language=en`;
 
     try {
-      const response = await axios.get(url, options);
-      if (response.data.results) {
-        setSuggestions(response.data.results);
+      const response = await axios.get(url, {
+        headers: {
+          'User-Agent': 'travel-planner-app/1.0 (dilshadalhan@gmail.com)',
+        },
+      });
+      if (response.data) {
+        setSuggestions(response.data);
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const fetchPlaceDetails = async (placeId, name) => {
-    const detailsUrl = `https://api.foursquare.com/v3/places/${placeId}`;
-    const options = {
-      headers: {
-        accept: 'application/json',
-        Authorization: API_KEY,
-      },
-    };
-
-    try {
-      const response = await axios.get(detailsUrl, options);
-      const placeDetails = response.data;
-      settripData({
-        locationInfo: {
-          name,
-          coordinates: placeDetails.location, // Use correct structure
-          photoRef: placeDetails.photos[0]?.photo_reference,
-          url: placeDetails.url,
+  const fetchPlaceDetails = (place) => {
+    settripData({
+      locationInfo: {
+        name: place.display_name,
+        coordinates: {
+          latitude: parseFloat(place.lat),
+          longitude: parseFloat(place.lon),
         },
-      });
-      router.push('/create-trip/select-traveler');
-    } catch (error) {
-      console.error(error);
-    }
+        address: place.address,
+      },
+    });
+    router.push('/create-trip/select-traveler');
   };
 
   const handleSearch = (text) => {
@@ -78,8 +62,8 @@ export default function SearchPlace() {
   };
 
   const handleSuggestionPress = (place) => {
-    fetchPlaceDetails(place.id, place.name); // Use correct structure
-    setQuery(place.name);
+    fetchPlaceDetails(place);
+    setQuery(place.display_name);
     setSuggestions([]);
   };
 
@@ -106,7 +90,7 @@ export default function SearchPlace() {
       {suggestions.length > 0 && (
         <FlatList
           data={suggestions}
-          keyExtractor={(item) => item.id} // Ensure key is a string
+          keyExtractor={(item) => item.place_id.toString()} // Ensure key is a string
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => handleSuggestionPress(item)}
@@ -116,14 +100,7 @@ export default function SearchPlace() {
                 borderBottomColor: Colors.LIGHT_GRAY,
               }}
             >
-              {/* Wrap the place name in a Text component */}
-              <Text>{item.name || 'Unknown Place'}</Text> {/* Fallback if name is undefined */}
-              {/* You can also render other details if necessary */}
-              {item.categories && item.categories.length > 0 && (
-                <Text style={{ fontSize: 12, color: Colors.GRAY }}>
-                  {item.categories[0].name} {/* Assuming the first category */}
-                </Text>
-              )}
+              <Text>{item.display_name || 'Unknown Place'}</Text>
             </TouchableOpacity>
           )}
         />

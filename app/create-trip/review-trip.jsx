@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useEffect, useState, useContext } from 'react'
 import { useNavigation, useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
@@ -24,7 +24,7 @@ export default function reviewtrip() {
     }
 
   return (
-    <View style={{
+    <ScrollView style={{
         padding: 25,
         paddingTop: 75,
         backgroundColor: Colors.WHITE,
@@ -134,6 +134,7 @@ export default function reviewtrip() {
         backgroundColor: Colors.PRIMARY,
         borderRadius: 15,
         marginTop: 80,
+        marginBottom: 50
       }}>
         <Text style={{
             textAlign: 'center',
@@ -142,6 +143,6 @@ export default function reviewtrip() {
             fontSize: 20,
         }}>Build My trip</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   )
 }

@@ -1,18 +1,38 @@
 import { View, Text, Image } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import UserTripCard from "./UserTripCard";
 import { TouchableOpacity } from "react-native";
 import { Colors } from "../../constants/Colors";
 import moment from "moment";
 import { useRouter } from "expo-router";
+import axios from "axios";
 
 export default function UserTripList({ userTrips }) {
+  const [placeImage, setPlaceImage] = useState(null);
   const sortedTrips = [...userTrips].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
   const latestTrip = JSON.parse(sortedTrips[0]?.tripData);
-  
-  console.log(sortedTrips[0]?.createdAt, 'date');
+
+  useEffect(() => {
+    const fetchPlaceImage = async () => {
+      if (latestTrip?.locationInfo?.name) {
+        const placeName = latestTrip.locationInfo.name;
+        try {
+          const response = await axios.get(
+            `https://api.unsplash.com/search/photos?query=${placeName}&client_id=oZV24h3YrF-N6bvc1YPbrkw9L2dasbOs91LCIOlb5kY`
+          );
+          if (response.data.results.length > 0) {
+            setPlaceImage(response.data.results[0].urls.regular);
+          }
+        } catch (error) {
+          console.error("Error fetching image from Unsplash:", error);
+        }
+      }
+    };
+
+    fetchPlaceImage();
+  }, [latestTrip]);
 
   const router = useRouter();
   return (
@@ -23,16 +43,11 @@ export default function UserTripList({ userTrips }) {
           flex: 1,
         }}
       >
-        {latestTrip?.locationInfo?.photoRef ? (
+        {placeImage ? (
           <Image
             style={{ width: "100%", height: 240, borderRadius: 20 }}
-            source={{
-              uri:
-                "https://maps.gomaps.pro/maps/api/place/photo?photo_reference=" +
-                latestTrip?.locationInfo.photoRef +
-                "&maxwidth=400&key=AlzaSyUauYMxlkYgk0g0uPpX7b1m2jxpslpvOQY",
-            }}
-          ></Image>
+            source={{ uri: placeImage }}
+          />
         ) : (
           <Image
             source={require("@/assets/images/login.webp")}
@@ -41,7 +56,7 @@ export default function UserTripList({ userTrips }) {
               height: 240,
               borderRadius: 20,
             }}
-          ></Image>
+          />
         )}
         <Text
           style={{

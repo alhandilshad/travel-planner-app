@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, ToastAndroid } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, ToastAndroid, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigation, useRouter } from 'expo-router'
 import { Colors } from '../../constants/Colors'
@@ -35,7 +35,7 @@ export default function selectTraveler() {
         router.push('/create-trip/select-dates')
     }
   return (
-    <View style={{
+    <ScrollView style={{
         padding: 25,
         paddingTop: 75,
         backgroundColor: Colors.WHITE,
@@ -71,6 +71,7 @@ export default function selectTraveler() {
         backgroundColor: Colors.PRIMARY,
         borderRadius: 15,
         marginTop: 10,
+        marginBottom: 50
       }}>
         <Text style={{
             textAlign: 'center',
@@ -79,6 +80,6 @@ export default function selectTraveler() {
             fontSize: 18,
         }}>Continue</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   )
 }
