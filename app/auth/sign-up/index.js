@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ToastAndroid } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ToastAndroid, Dimensions } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { Colors } from '@/constants/Colors'
@@ -7,12 +7,13 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../../configs/FirebaseConfig";
 import { doc, setDoc, getDocs, collection } from "firebase/firestore";
 
-export default function signUp() {
+const { width, height } = Dimensions.get("window");
+
+export default function SignUp() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [fullName, setfullName] = useState();
   const navigation = useNavigation();
-
   const router = useRouter();
 
   useEffect(() => {
@@ -31,16 +32,16 @@ export default function signUp() {
     const userExists = userList.some((user) => user.name === name);
 
     if (userExists) {
-      ToastAndroid.show('Username already exist! Please use another one.', ToastAndroid.LONG)
+      ToastAndroid.show('Username already exists! Please use another one.', ToastAndroid.LONG);
       return;
     }
 
-    if (!email ||!password ||!fullName) {
-      ToastAndroid.show('Please enter all details', ToastAndroid.LONG)
+    if (!email || !password || !fullName) {
+      ToastAndroid.show('Please enter all details', ToastAndroid.LONG);
       return;
     }
     createUserWithEmailAndPassword(auth, email, password)
-     .then(async (userCredential) => {
+      .then(async (userCredential) => {
         const uid = userCredential.user.uid;
         const userData = { fullName, email, uid };
         await setDoc(doc(db, "users", uid), userData);
@@ -51,54 +52,27 @@ export default function signUp() {
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
       });
-  }
+  };
 
   return (
-    <View
-      style={{
-        padding: 25,
-        paddingTop: 50,
-        backgroundColor: Colors.WHITE,
-        height: '100%',
-      }}
-    >
+    <View style={styles.container}>
       <TouchableOpacity onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
-      <Text
-        style={{
-          fontFamily: "outfit-bold",
-          fontSize: 30,
-          marginTop: 30,
-        }}
-      >
-        Create New Account
-      </Text>
+      <Text style={styles.headerText}>Create New Account</Text>
 
-      <View
-        style={{
-          marginTop: 50,
-        }}
-      >
-        <Text style={{ fontFamily: "outfit" }}>Full Name</Text>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Full Name</Text>
         <TextInput placeholder="Enter full name" style={styles.input} onChangeText={(value) => setfullName(value)} />
       </View>
 
-      <View
-        style={{
-          marginTop: 20,
-        }}
-      >
-        <Text style={{ fontFamily: "outfit" }}>Email</Text>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Email</Text>
         <TextInput placeholder="Enter email" style={styles.input} onChangeText={(value) => setEmail(value)} />
       </View>
 
-      <View
-        style={{
-          marginTop: 20,
-        }}
-      >
-        <Text style={{ fontFamily: "outfit" }}>Password</Text>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Password</Text>
         <TextInput
           placeholder="Enter password"
           secureTextEntry={true}
@@ -107,42 +81,66 @@ export default function signUp() {
         />
       </View>
 
-      <TouchableOpacity onPress={onCreateAccount} style={{
-        padding: 20,
-        backgroundColor: Colors.PRIMARY,
-        color: Colors.WHITE,
-        borderRadius: 15,
-        marginTop: 50,
-      }}>
-        <Text style={{
-          color: Colors.WHITE,
-          textAlign: 'center',
-        }}>Create Account</Text>
+      <TouchableOpacity onPress={onCreateAccount} style={styles.createAccountButton}>
+        <Text style={styles.buttonText}>Create Account</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.replace('auth/sign-in')} style={{
-        padding: 20,
-        backgroundColor: Colors.WHITE,
-        color: Colors.WHITE,
-        borderRadius: 15,
-        marginTop: 20,
-        borderWidth: 1,
-      }}>
-        <Text style={{
-          color: Colors.PRIMARY,
-          textAlign: 'center',
-        }}>Sign In</Text>
+      <TouchableOpacity onPress={() => router.replace('auth/sign-in')} style={styles.signInButton}>
+        <Text style={styles.signInButtonText}>Sign In</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: width * 0.05,
+    paddingTop: height * 0.05,
+    backgroundColor: Colors.WHITE,
+    height: "100%",
+  },
+  headerText: {
+    fontFamily: "outfit-bold",
+    fontSize: width * 0.08,
+    marginTop: height * 0.03,
+  },
+  inputContainer: {
+    marginTop: height * 0.03,
+  },
+  label: {
+    fontFamily: "outfit",
+    fontSize: width * 0.04,
+  },
   input: {
-    padding: 15,
+    padding: height * 0.02,
     borderWidth: 1,
-    borderRadius: 15,
+    borderRadius: width * 0.03,
     borderColor: Colors.GRAY,
-    fontFamily: 'outfit',
-  }
+    fontFamily: "outfit",
+    fontSize: width * 0.04,
+  },
+  createAccountButton: {
+    padding: height * 0.025,
+    backgroundColor: Colors.PRIMARY,
+    borderRadius: width * 0.04,
+    marginTop: height * 0.06,
+  },
+  buttonText: {
+    color: Colors.WHITE,
+    textAlign: "center",
+    fontSize: width * 0.045,
+  },
+  signInButton: {
+    padding: height * 0.025,
+    backgroundColor: Colors.WHITE,
+    borderRadius: width * 0.04,
+    marginTop: height * 0.02,
+    borderWidth: 1,
+    borderColor: Colors.PRIMARY,
+  },
+  signInButtonText: {
+    color: Colors.PRIMARY,
+    textAlign: "center",
+    fontSize: width * 0.045,
+  },
 });

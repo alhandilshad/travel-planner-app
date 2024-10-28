@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ToastAndroid, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation, useRouter } from 'expo-router'
 import { Colors } from '@/constants/Colors'
@@ -6,6 +6,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { he } from 'date-fns/locale';
+
+const { width, height } = Dimensions.get('window');
 
 export default function signIn() {
   const [email, setEmail] = useState();
@@ -52,8 +55,8 @@ export default function signIn() {
 
   return (
     <View style={{
-        padding: 25,
-        paddingTop: 40,
+        padding: width * 0.06,
+        paddingTop: height * 0.05,
         backgroundColor: Colors.WHITE,
         height: '100%',
     }}>
@@ -61,43 +64,43 @@ export default function signIn() {
         <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
       <Text style={{
-        fontSize: 30,
+        fontSize: width * 0.08,
         fontFamily: 'outfit-bold',
-        marginTop: 30,
+        marginTop: height * 0.03,
       }}>Let's Sign You In</Text>
       <Text style={{
-        fontSize: 30,
+        fontSize: width * 0.08,
         fontFamily: 'outfit',
         color: Colors.GRAY,
-        marginTop: 20
+        marginTop: height * 0.02,
       }}>Welcome Back</Text>
       <Text style={{
-        fontSize: 30,
+        fontSize: width * 0.08,
         fontFamily: 'outfit',
         color: Colors.GRAY,
-        marginTop: 10
+        marginTop: height * 0.01,
       }}>You've been missed</Text>
 
       <View style={{
-        marginTop: 50,
+        marginTop: height * 0.05,
       }}>
         <Text style={{fontFamily: 'outfit'}}>Email</Text>
         <TextInput placeholder='Enter email' style={styles.input} onChangeText={(value) => setEmail(value)} />
       </View>
 
       <View style={{
-        marginTop: 20,
+        marginTop: height * 0.05,
       }}>
         <Text style={{fontFamily: 'outfit'}}>Password</Text>
         <TextInput placeholder='Enter password' secureTextEntry={true} style={styles.input} onChangeText={(value) => setPassword(value)} />
       </View>
 
       <TouchableOpacity onPress={onSignIn} style={{
-        padding: 20,
+        paddingVertical: height * 0.025,
         backgroundColor: Colors.PRIMARY,
         color: Colors.WHITE,
         borderRadius: 15,
-        marginTop: 50,
+        marginTop: height * 0.06,
       }}>
         <Text style={{
           color: Colors.WHITE,
@@ -106,11 +109,11 @@ export default function signIn() {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.replace('auth/sign-up')} style={{
-        padding: 20,
+        paddingVertical: height * 0.025,
         backgroundColor: Colors.WHITE,
         color: Colors.WHITE,
         borderRadius: 15,
-        marginTop: 20,
+        marginTop: height * 0.03,
         borderWidth: 1,
       }}>
         <Text style={{
@@ -124,7 +127,7 @@ export default function signIn() {
 
 const styles = StyleSheet.create({
   input: {
-    padding: 15,
+    padding: height * 0.015,
     borderWidth: 1,
     borderRadius: 15,
     borderColor: Colors.GRAY,

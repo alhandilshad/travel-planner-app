@@ -1,15 +1,17 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 import React from 'react'
 import { Colors } from '@/constants/Colors'
 import { useRouter } from 'expo-router'
+
+const { width, height } = Dimensions.get('window');
 
 export default function Login() {
     const router  = useRouter()
   return (
     <View>
       <Image source={require('@/assets/images/login.webp')} style={{
-        width:'100%',
-        height: 450,
+        width:width,
+        height: height * 0.50,
       }}></Image>
       <View style={styles.container}>
         <Text style={{
