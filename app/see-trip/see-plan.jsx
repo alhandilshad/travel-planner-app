@@ -1,4 +1,4 @@
-import { View, Text, Image, Alert } from "react-native";
+import { View, Text, Image, Alert, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Colors } from "../../constants/Colors";
@@ -66,7 +66,8 @@ export default function seeplan() {
   };
 
   return (
-    <View
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={{ backgroundColor: Colors.WHITE }}>
+      <View
       style={{
         backgroundColor: Colors.WHITE,
         height: "100%",
@@ -193,5 +194,6 @@ export default function seeplan() {
         </View>
       </View>
     </View>
+    </ScrollView>
   );
 }
