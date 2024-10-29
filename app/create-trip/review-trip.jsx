@@ -24,7 +24,8 @@ export default function reviewtrip() {
     }
 
   return (
-    <ScrollView style={{
+    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{backgroundColor: Colors.WHITE}}>
+        <View style={{
         padding: 25,
         paddingTop: 75,
         backgroundColor: Colors.WHITE,
@@ -143,6 +144,7 @@ export default function reviewtrip() {
             fontSize: 20,
         }}>Build My trip</Text>
       </TouchableOpacity>
+    </View>
     </ScrollView>
   )
 }

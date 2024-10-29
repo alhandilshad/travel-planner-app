@@ -22,31 +22,32 @@ export default function SearchPlace() {
   }, [navigation]);
 
   const fetchPlaces = async (text) => {
-    const url = `https://nominatim.openstreetmap.org/search?q=${text}&format=json&addressdetails=1&limit=5&accept-language=en`;
-
+    const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${text}&format=json&apiKey=4b1b1c5dee19478d88f2ba0d6d691806`;
+  
     try {
-      const response = await axios.get(url, {
-        headers: {
-          'User-Agent': 'travel-planner-app/1.0 (dilshadalhan@gmail.com)',
-        },
-      });
-      if (response.data) {
-        setSuggestions(response.data);
+      const response = await axios.get(url);
+  
+      // Access the 'results' array instead of 'features'
+      if (response.data && response.data.results && response.data.results.length > 0) {
+        console.log('Suggestions:', response.data.results); // Log suggestions if available
+        setSuggestions(response.data.results); // Update suggestions with the correct array
+      } else {
+        console.log('No results found in the response.');
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching places:', error.response ? error.response.data : error.message);
     }
   };
-
+  
   const fetchPlaceDetails = (place) => {
     settripData({
       locationInfo: {
-        name: place.display_name,
+        name: place.formatted || 'Unknown Place', // Access formatted directly
         coordinates: {
-          latitude: parseFloat(place.lat),
-          longitude: parseFloat(place.lon),
+          latitude: place.lat, // Access lat directly
+          longitude: place.lon, // Access lon directly
         },
-        address: place.address,
+        address: place.address_line1,
       },
     });
     router.push('/create-trip/select-traveler');
@@ -63,7 +64,7 @@ export default function SearchPlace() {
 
   const handleSuggestionPress = (place) => {
     fetchPlaceDetails(place);
-    setQuery(place.display_name);
+    setQuery(place.formatted);
     setSuggestions([]);
   };
 
@@ -100,7 +101,7 @@ export default function SearchPlace() {
                 borderBottomColor: Colors.LIGHT_GRAY,
               }}
             >
-              <Text>{item.display_name || 'Unknown Place'}</Text>
+              <Text>{item.formatted || 'Unknown Place'}</Text>
             </TouchableOpacity>
           )}
         />

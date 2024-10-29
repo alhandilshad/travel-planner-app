@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, ToastAndroid } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, ToastAndroid, ScrollView } from 'react-native'
 import React, { useEffect, useState, useContext } from 'react'
 import { useNavigation, useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
@@ -36,7 +36,8 @@ export default function selectbudget() {
         router.push('/create-trip/review-trip')
     }
   return (
-    <View style={{
+    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{backgroundColor: Colors.WHITE}}>
+      <View style={{
         padding: 25,
         paddingTop: 75,
         backgroundColor: Colors.WHITE,
@@ -79,5 +80,6 @@ export default function selectbudget() {
         }}>Continue</Text>
       </TouchableOpacity>
     </View>
+    </ScrollView>
   )
 }

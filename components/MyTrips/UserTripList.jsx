@@ -23,7 +23,7 @@ export default function UserTripList({ userTrips }) {
             `https://api.unsplash.com/search/photos?query=${placeName}&client_id=oZV24h3YrF-N6bvc1YPbrkw9L2dasbOs91LCIOlb5kY`
           );
           if (response.data.results.length > 0) {
-            setPlaceImage(response.data.results[0].urls.regular);
+            setPlaceImage(response.data.results[1].urls.regular);
           }
         } catch (error) {
           console.error("Error fetching image from Unsplash:", error);
