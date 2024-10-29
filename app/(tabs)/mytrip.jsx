@@ -33,7 +33,10 @@ export default function myTrip() {
       const unsubscribeTrips = onSnapshot(q, (querySnapshot) => {
         const trips = [];
         querySnapshot.forEach((doc) => {
-          trips.push(doc.data());
+          trips.push({
+            id: doc.id,  // This is the document ID
+            ...doc.data()
+          });
         });
         setuserTrips(trips);
       });
@@ -41,6 +44,8 @@ export default function myTrip() {
       return () => unsubscribeTrips();
     }
   }, [currentUser]);
+
+  console.log(userTrips, 'trip');
 
   return (
     <ScrollView style={{

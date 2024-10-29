@@ -6,6 +6,8 @@ import moment from "moment";
 import { TouchableOpacity } from "react-native";
 import * as Location from 'expo-location';
 import axios from "axios";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../../configs/FirebaseConfig";
 
 export default function seeplan() {
   const [placeImage, setPlaceImage] = useState(null);
@@ -46,7 +48,36 @@ export default function seeplan() {
     fetchPlaceImage();
   }, [latestTrip]);
 
-  const handleDeleteTrip = () => {}
+  const handleDeleteTrip = () => {
+    Alert.alert(
+      "Delete Trip",
+      "Are you sure you want to delete this trip?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: async () => {
+            if (item?.id) {
+              try {
+                await deleteDoc(doc(db, "trips", item.id));
+                Alert.alert("Success", "Trip deleted successfully.");
+                router.push('/mytrip') // Navigate to the Home screen after deletion
+              } catch (error) {
+                Alert.alert("Error", "Failed to delete the trip.");
+                console.error("Error deleting document:", error);
+              }
+            } else {
+              Alert.alert("Error", "item ID not found.");
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  }
 
   const handleSeeMap = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -165,7 +196,7 @@ export default function seeplan() {
           marginTop: 20,
         }}
         >
-          <TouchableOpacity onPress={() => handleDeleteTrip} style={{
+          <TouchableOpacity onPress={handleDeleteTrip} style={{
             backgroundColor: 'red',
             paddingVertical: 10,
             paddingHorizontal: 30,

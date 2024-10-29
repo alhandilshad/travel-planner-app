@@ -8,7 +8,6 @@ import axios from "axios";
 export default function UserTripCard({ trip, key }) {
   const [placeImage, setPlaceImage] = useState(null);
   const tripData = JSON.parse(trip?.tripData);
-  console.log(trip?.createdAt);
   
   useEffect(() => {
     const fetchPlaceImage = async () => {
@@ -90,7 +89,8 @@ export default function UserTripCard({ trip, key }) {
               pathname: "/see-trip/see-plan",
               params: {
                 latestTrip: JSON.stringify(tripData),
-                date: trip?.createdAt
+                date: trip?.createdAt,
+                id: trip?.id
               },
             })
           }

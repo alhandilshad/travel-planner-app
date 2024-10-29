@@ -92,7 +92,8 @@ export default function UserTripList({ userTrips }) {
               pathname: "/see-trip/see-plan",
               params: {
                 latestTrip: JSON.stringify(latestTrip),
-                date: sortedTrips[0]?.createdAt
+                date: sortedTrips[0]?.createdAt,
+                id: sortedTrips[0]?.id
               },
             })
           }
