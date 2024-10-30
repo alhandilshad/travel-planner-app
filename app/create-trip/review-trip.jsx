@@ -135,7 +135,6 @@ export default function reviewtrip() {
         backgroundColor: Colors.PRIMARY,
         borderRadius: 15,
         marginTop: 80,
-        marginBottom: 50
       }}>
         <Text style={{
             textAlign: 'center',

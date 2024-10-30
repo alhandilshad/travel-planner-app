@@ -16,6 +16,9 @@ export default function Index() {
     });
     return () => unsubscribe();
   }, []);
+
+  console.log(currentUser, 'user');
+  
   
   return (
     <View

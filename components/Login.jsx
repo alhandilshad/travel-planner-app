@@ -9,7 +9,7 @@ export default function Login() {
     const router  = useRouter()
   return (
     <View>
-      <Image source={require('@/assets/images/login.webp')} style={{
+      <Image source={require('@/assets/images/welcome.jpg')} style={{
         width:width,
         height: height * 0.50,
       }}></Image>
@@ -19,7 +19,7 @@ export default function Login() {
             fontFamily: 'outfit-bold',
             textAlign: 'center',
             marginTop: 10,
-        }}>AI Travel Planner</Text>
+        }}>Travel Planner App</Text>
         <Text style={{
             fontSize: 16,
             fontFamily: 'outfit',
